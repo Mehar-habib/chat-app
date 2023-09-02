@@ -1,16 +1,15 @@
 import express from "express";
 import { chats } from "./data/data.js";
 import { PORT } from "./config/index.js";
+import ConnectDB from "./config/db.js";
+import router from "./routes/index.js";
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 const app = express();
 
-app.get("/api/chat", (req, res) => {
-  res.send(chats);
-});
-
-app.get("/api/chat/:id", (req, res) => {
-  // console.log(req.params.id)
-  const singleChat = chats.find((e) => e._id === req.params.id);
-  res.send(singleChat);
-});
+ConnectDB();
+app.use(express.json());
+app.use("/api/user", router);
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, console.log("Server started on PORT 4000"));

@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap');
+
+.App{
+    min-height: 100vh;
+    display: flex;
+    background-image: url("https://img.freepik.com/free-psd/social-media-background-with-emojis_23-2150112030.jpg?size=626&ext=jpg&ga=GA1.1.1481009687.1688319318&semt=ais");
+    background-size: cover;
+    background-position: center;
+}

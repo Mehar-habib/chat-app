@@ -16,7 +16,7 @@ function ChatApp() {
   return (
     <div>
       {chats.map((chat) => {
-        return <div key={chat.id}>{chat.chatName}</div>;
+        return <div key={chat._id}>{chat.chatName}</div>;
       })}
     </div>
   );
