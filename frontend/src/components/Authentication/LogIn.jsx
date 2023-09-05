@@ -50,7 +50,7 @@ function LogIn() {
         config
       );
       toast({
-        title: "Registration Successful!",
+        title: "LogIn Successful!",
         status: "success",
         duration: 5000,
         isClosable: true,
