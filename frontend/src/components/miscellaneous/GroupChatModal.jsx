@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   FormControl,
   Input,
@@ -16,6 +17,7 @@ import { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import axios from "axios";
 import UserListItem from "../UserAvatar/UserListItem";
+import UserBadgeItem from "../UserAvatar/UserBadgeItem";
 
 function GroupChatModal({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,7 +59,24 @@ function GroupChatModal({ children }) {
     }
   };
   const handleSubmit = () => {};
-  const handleGroup = () => {};
+
+  const handleDelete = (delUser) => {
+    setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
+  };
+
+  const handleGroup = (userToAdd) => {
+    if (selectedUsers.includes(userToAdd)) {
+      toast({
+        title: "User already added",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+
+    setSelectedUsers([...selectedUsers, userToAdd]);
+  };
 
   return (
     <>
@@ -90,7 +109,17 @@ function GroupChatModal({ children }) {
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            {/* selected users */}
+
+            <Box display="flex" w="100%" flexWrap="wrap">
+              {selectedUsers.map((u) => (
+                <UserBadgeItem
+                  key={user._id}
+                  user={u}
+                  handleFunction={() => handleDelete(u)}
+                />
+              ))}
+            </Box>
+
             {loading ? (
               <div>Loading</div>
             ) : (
