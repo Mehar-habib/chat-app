@@ -23,7 +23,7 @@ function ProfileModal({ user, children }) {
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton d={{ base: "flex" }} onClick={onOpen}>
+        <IconButton display={{ base: "flex" }} onClick={onOpen}>
           <BsEyeFill />
         </IconButton>
         // <IconButton d={{ base: "flex" }} icon={ViewIcon} onClick={onOpen} />
