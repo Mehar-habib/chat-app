@@ -6,6 +6,7 @@ import router from "./routes/index.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import { Server } from "socket.io";
 const app = express();
 
 ConnectDB();
@@ -17,4 +18,25 @@ app.use("/api/user", router);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, console.log("Server started on PORT 4000"));
+const server = app.listen(PORT, console.log("Server started on PORT 4000"));
+
+const io = new Server(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("connected to socket.io");
+
+  socket.on("setup", (userData) => {
+    socket.join(userData._id);
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log("user joined Room: " + room);
+  });
+});

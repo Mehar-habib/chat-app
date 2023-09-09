@@ -17,6 +17,10 @@ import axios from "axios";
 import "./style.css";
 import ScrollableChat from "./ScrollableChat";
 
+import io from "socket.io-client";
+const ENDPOINT = "http://localhost:4000";
+let socket, selectedChatCompare;
+
 function SingleChat({ fetchAgain, setFetchAgain }) {
   const { user, selectedChat, setSelectedChat } = ChatState();
   const toast = useToast();
@@ -24,6 +28,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -40,9 +45,9 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         config
       );
 
-      console.log(messages);
       setMessages(data);
       setLoading(false);
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occurred!",
@@ -94,6 +99,11 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       }
     }
   };
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
 
   // !=============================================1
 
