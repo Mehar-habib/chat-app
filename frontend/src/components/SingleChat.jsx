@@ -30,6 +30,12 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [newMessage, setNewMessage] = useState();
   const [socketConnected, setSocketConnected] = useState(false);
 
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
+
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
@@ -62,7 +68,21 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceieved) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceieved.chat._id
+      ) {
+        // give notification
+      } else {
+        setMessages([...messages, newMessageReceieved]);
+      }
+    });
+  });
 
   // !!!========================================
 
@@ -86,6 +106,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         );
 
         console.log(data);
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -99,11 +120,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       }
     }
   };
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
-  }, []);
 
   // !=============================================1
 
